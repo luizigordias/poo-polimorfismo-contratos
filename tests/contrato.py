@@ -1,3 +1,4 @@
+from math import isfinite
 import inspect
 import sys
 import unittest
@@ -7,12 +8,15 @@ from painel import linha_painel
 ETAPA = sys.argv.pop() if sys.argv[-1] in ("01", "02") else "01"
 
 class SensorTeste(Sensor):
+    """Sensor de teste com faixa de entrada igual aos numeros finitos."""
     def __init__(self):
         super().__init__("TESTE")
         self.v = 3.5
     def valor(self): return self.v
     def unidade(self): return "u"
     def atualizar(self, leitura):
+        if not isfinite(leitura):
+            return False
         self.v = leitura
         return True
     def em_alerta(self): return self.v > 4

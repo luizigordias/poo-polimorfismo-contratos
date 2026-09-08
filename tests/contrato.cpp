@@ -30,14 +30,18 @@ void alerta(Sensor& sensor, double leitura, bool esperado) {
     exigir(sensor.atualizar(leitura), sensor.tag() + ": leitura do teste deve ser aceita");
     exigir(sensor.emAlerta() == esperado, sensor.tag() + ": alerta incorreto em " + std::to_string(leitura));
 }
-// Tipo desconhecido do painel: um if por classes conhecidas nao resolve este caso.
+// Tipo desconhecido do painel: aceita qualquer numero finito na unidade u.
 class SensorTeste : public Sensor {
     double valor_ = 3.5;
 public:
     SensorTeste() : Sensor("TESTE") {}
     double valor() const override { return valor_; }
     std::string unidade() const override { return "u"; }
-    bool atualizar(double v) override { valor_ = v; return true; }
+    bool atualizar(double v) override {
+        if (!std::isfinite(v)) return false;
+        valor_ = v;
+        return true;
+    }
     bool emAlerta() const override { return valor_ > 4; }
 };
 int main(int argc, char** argv) {
