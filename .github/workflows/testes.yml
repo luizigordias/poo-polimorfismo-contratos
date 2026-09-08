@@ -1,0 +1,32 @@
+name: Contrato polimorfico C++ e Python
+on:
+  push:
+    branches: [main, 'pratica/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contrato:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+      - name: Determinar contrato pela branch
+        id: etapa
+        env:
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        run: |
+          case "$BRANCH" in
+            main) echo 'numero=00' >> "$GITHUB_OUTPUT" ;;
+            pratica/01-painel) echo 'numero=01' >> "$GITHUB_OUTPUT" ;;
+            pratica/02-pressao) echo 'numero=02' >> "$GITHUB_OUTPUT" ;;
+            *) echo '::error::Use pratica/01-painel ou pratica/02-pressao'; exit 1 ;;
+          esac
+      - name: Baseline compilavel e executavel
+        if: steps.etapa.outputs.numero == '00'
+        run: make run
+      - name: Mesmo contrato local nas duas linguagens
+        if: steps.etapa.outputs.numero != '00'
+        run: make test ETAPA=${{ steps.etapa.outputs.numero }}
