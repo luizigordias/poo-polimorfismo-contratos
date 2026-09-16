@@ -14,7 +14,8 @@ public:
         return true;
     }
     bool emAlerta() const override {
-        // TODO: substituir o marcador pelo comportamento contratado.
+        // TODO: substituir o marcador pelo comportamento contratado<20.
+        if (valor_ < 20) return true;
         return false;
     }
 };
@@ -31,7 +32,8 @@ public:
         return true;
     }
     bool emAlerta() const override {
-        // TODO: substituir o marcador pelo comportamento contratado.
+        // TODO: substituir o marcador pelo comportamento contratado>45.
+        if (valor_ > 45) return true;
         return false;
     }
 };
@@ -43,12 +45,13 @@ public:
     double valor() const override { return valor_; }
     std::string unidade() const override { return "bar"; }
     bool atualizar(double leitura) override {
-        // TODO ETAPA 02: validar antes de alterar o estado.
+        // TODO ETAPA 02: validar antes de alterar o estado>8.
         (void)leitura;
         return false;
     }
     bool emAlerta() const override {
         // TODO: substituir o marcador pelo comportamento contratado.
+        if (valor_ > 8) return true;
         return false;
     }
 };
